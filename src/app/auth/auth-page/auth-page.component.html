@@ -5,59 +5,33 @@
         >
             <div class="text-center">
                 <h2 class="text-3xl font-bold text-neon-yellow font-arcade">
-                    Iniciar Sesión
+                    @if (this.authType === 'login') { Iniciar Sesión } @else {
+                    Registrarse }
                 </h2>
                 <p class="mt-2 text-sm">
-                    Ingresa a tu cuenta para comenzar a jugar
+                    @if (this.authType === 'login') { Ingresa a tu cuenta para
+                    comenzar a jugar } @else { Crea una nueva cuenta para
+                    comenzar a jugar }
                 </p>
             </div>
-            <form class="mt-8 space-y-6" (ngSubmit)="onSubmit()">
-                <div class="space-y-4 rounded-md shadow-sm">
-                    <div>
-                        <label for="email-address" class="sr-only"
-                            >Correo electrónico</label
-                        >
-                        <input
-                            id="email-address"
-                            name="email"
-                            type="email"
-                            required
-                            [(ngModel)]="this.email"
-                            class="bg-gray-700 w-full p-2 rounded"
-                            placeholder="Correo electrónico"
-                        />
-                    </div>
-                    <div>
-                        <label for="password" class="sr-only">Contraseña</label>
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            required
-                            [(ngModel)]="password"
-                            class="bg-gray-700 w-full p-2 rounded"
-                            placeholder="Contraseña"
-                        />
-                    </div>
-                </div>
-                <div>
-                    <button
-                        type="submit"
-                        class="w-full bg-green-500 text-black hover:bg-green-600 font-arcade p-2 rounded"
-                    >
-                        Iniciar Sesión
-                    </button>
-                </div>
-            </form>
+            <app-auth-form [authType]="this.authType"></app-auth-form>
             <div class="text-center">
                 <p class="mt-2 text-sm text-neon-pink">
-                    ¿No tienes una cuenta?
+                    @if (this.authType === 'login') { ¿No tienes una cuenta?
                     <a
-                        routerLink="/register"
-                        class="font-medium text-neon-yellow hover:text-neon-yellow/80"
+                        routerLink="/auth/register"
+                        class="font-medium text-blue-500 hover:text-blue-500/70"
                     >
                         Regístrate aquí
                     </a>
+                    } @else { ¿Ya tienes una cuenta?
+                    <a
+                        routerLink="/auth/login"
+                        class="font-medium text-blue-500 hover:text-blue-500/70"
+                    >
+                        Ingresa aquí
+                    </a>
+                    }
                 </p>
             </div>
         </div>

@@ -1,1 +1,42 @@
-<p>auth-form works!</p>
+<form class="mt-8 space-y-6" (ngSubmit)="onSubmit()">
+    <div class="space-y-4 rounded-md shadow-sm">
+        <div>
+            <label for="email-address" class="sr-only"
+                >Correo electrónico</label
+            >
+            <input
+                id="email-address"
+                name="email"
+                type="email"
+                required
+                [(ngModel)]="this.email"
+                class="bg-gray-700 w-full p-2 rounded"
+                placeholder="Correo electrónico"
+            />
+        </div>
+        <div>
+            <label for="password" class="sr-only">Contraseña</label>
+            <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                [(ngModel)]="password"
+                class="bg-gray-700 w-full p-2 rounded"
+                placeholder="Contraseña"
+            />
+        </div>
+    </div>
+    <div>
+        <button
+            type="submit"
+            class="w-full bg-green-500 text-black hover:bg-green-600 font-arcade p-2 rounded"
+        >
+        @if (this.authType === 'login') {
+            Iniciar Sesión
+        } @else {
+            Registrarse
+        }
+        </button>
+    </div>
+</form>

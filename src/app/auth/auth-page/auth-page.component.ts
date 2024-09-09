@@ -1,28 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthFormComponent } from '../auth-form/auth-form.component';
-import { Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-auth-page',
     standalone: true,
-    imports: [AuthFormComponent, RouterLink, FormsModule ],
+    imports: [AuthFormComponent, RouterLink, FormsModule],
     templateUrl: './auth-page.component.html',
     styleUrl: './auth-page.component.css',
 })
-export class AuthPageComponent {
-    email: string = '';
-    password: string = '';
+export class AuthPageComponent implements OnInit {
+    authType?: 'login' | 'register';
 
-    constructor(private router: Router) {}
+    constructor(private route: ActivatedRoute) {}
 
-    onSubmit() {
-        // Aquí puedes agregar la lógica para manejar el inicio de sesión
-        console.log('Correo:', this.email);
-        console.log('Contraseña:', this.password);
-
-        // Si el inicio de sesión es exitoso, redirigir al usuario a otra página
-        // this.router.navigate(['/home']);
+    ngOnInit(): void {
+        this.route.url.subscribe((urlSegment) => {
+            this.authType =
+                urlSegment[0].path === 'login' ? 'login' : 'register';
+        });
     }
 }

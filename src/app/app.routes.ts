@@ -4,17 +4,35 @@ export const routes: Routes = [
     {
         path: 'home',
         loadComponent: () =>
-            import('./home/home-page/home-page.component').then((m) => m.HomePageComponent),
+            import('./home/home-page/home-page.component').then(
+                (m) => m.HomePageComponent
+            ),
     },
     {
         path: 'auth',
-        loadComponent: () =>
-            import('./auth/auth-page/auth-page.component').then((m) => m.AuthPageComponent),
+        children: [
+            {
+                path: 'login',
+                loadComponent: () =>
+                    import('./auth/auth-page/auth-page.component').then(
+                        (m) => m.AuthPageComponent
+                    ),
+            },
+            {
+                path: 'register',
+                loadComponent: () =>
+                    import('./auth/auth-page/auth-page.component').then(
+                        (m) => m.AuthPageComponent
+                    ),
+            },
+        ],
     },
     {
         path: 'about-me',
         loadComponent: () =>
-            import('./about-me/about-me.component').then((m) => m.AboutMeComponent),
+            import('./about-me/about-me.component').then(
+                (m) => m.AboutMeComponent
+            ),
     },
     {
         path: '',
@@ -24,6 +42,8 @@ export const routes: Routes = [
     {
         path: '**',
         loadComponent: () =>
-            import('./error-page/error-page.component').then((m) => m.ErrorPageComponent),
+            import('./error-page/error-page.component').then(
+                (m) => m.ErrorPageComponent
+            ),
     },
 ];
