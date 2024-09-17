@@ -1,0 +1,14 @@
+#pongBody {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#pongCanvas {
+    position: absolute;
+    top: 63px; /* Ajusta el canvas para comenzar debajo del navbar */
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 63px); /* Ajusta la altura del canvas */
+	z-index: -1;
+}

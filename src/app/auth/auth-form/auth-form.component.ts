@@ -84,18 +84,19 @@ export class AuthFormComponent {
             });
     }
 
-    public fillInGuest(guest: 'guest' | 'admin') {
+    public fillInGuest(event: MouseEvent, guest: 'guest' | 'admin') {
+        event.preventDefault(); // Evita el envío del formulario
         if (guest === 'guest') {
             this.credentials.setValue({
                 email: 'guest@guest.com',
                 password: 'password',
-				username: ''
+                username: '',
             });
         } else {
             this.credentials.setValue({
                 email: 'admin@admin.com',
                 password: 'password',
-				username: ''
+                username: '',
             });
         }
     }

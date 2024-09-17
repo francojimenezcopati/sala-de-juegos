@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { GameCardComponent } from '../game-card/game-card.component';
 import { RouterLink } from '@angular/router';
+import { PongComponent } from "../../pong-bg/pong/pong.component";
 
 @Component({
     selector: 'app-home-page',
     standalone: true,
-    imports: [NavBarComponent, GameCardComponent, RouterLink],
+    imports: [NavBarComponent, GameCardComponent, RouterLink, PongComponent],
     templateUrl: './home-page.component.html',
     styleUrl: './home-page.component.css',
 })
