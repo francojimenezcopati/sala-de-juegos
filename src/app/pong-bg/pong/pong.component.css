@@ -12,3 +12,60 @@
     height: calc(100vh - 63px); /* Ajusta la altura del canvas */
 	z-index: -1;
 }
+
+#left-paddle-controls,
+#right-paddle-controls {
+    position: absolute;
+    z-index: -2; /* Asegura que las etiquetas de control estén sobre el canvas */
+}
+
+#left-paddle-controls {
+    top: 50%; /* Ajusta la posición vertical de las etiquetas para la paleta izquierda */
+    left: 15px; /* Ajusta la posición horizontal de las etiquetas para la paleta izquierda */
+    transform: translateY(-50%); /* Centra verticalmente las etiquetas respecto a la paleta */
+}
+
+#right-paddle-controls {
+    top: 50%; /* Ajusta la posición vertical de las etiquetas para la paleta derecha */
+    right: 15px; /* Ajusta la posición horizontal de las etiquetas para la paleta derecha */
+    transform: translateY(-50%); /* Centra verticalmente las etiquetas respecto a la paleta */
+}
+
+.control-indicator {
+    display: block;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    background: rgba(0, 0, 0, 0.5); /* Fondo semitransparente para visibilidad */
+    padding: 2px 5px;
+    border-radius: 3px;
+    text-align: center;
+}
+
+#left-paddle-controls .control-indicator:first-of-type {
+    position: absolute;
+    top: -60px; /* Ajusta la posición vertical de 'W' */
+    left: 50%; /* Centra horizontalmente 'W' */
+    transform: translateX(-50%);
+}
+
+#left-paddle-controls .control-indicator:last-of-type {
+    position: absolute;
+    bottom: -130px; /* Ajusta la posición vertical de 'S' */
+    left: 50%; /* Centra horizontalmente 'S' */
+    transform: translateX(-50%);
+}
+
+#right-paddle-controls .control-indicator:first-of-type {
+    position: absolute;
+    top: -60px; /* Ajusta la posición vertical de 'O' */
+    left: 50%; /* Centra horizontalmente 'O' */
+    transform: translateX(-50%);
+}
+
+#right-paddle-controls .control-indicator:last-of-type {
+    position: absolute;
+    bottom: -130px; /* Ajusta la posición vertical de 'L' */
+    left: 50%; /* Centra horizontalmente 'L' */
+    transform: translateX(-50%);
+}
