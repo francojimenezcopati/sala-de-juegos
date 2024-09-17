@@ -1,4 +1,4 @@
-<form class="mt-8 space-y-6" (ngSubmit)="onSubmit()">
+<form [formGroup]="credentials" class="mt-8 space-y-6" (ngSubmit)="onSubmit()">
     <div class="space-y-4 rounded-md shadow-sm">
         <div>
             <label for="email-address" class="sr-only"
@@ -9,11 +9,36 @@
                 name="email"
                 type="email"
                 required
-                [(ngModel)]="this.email"
                 class="bg-gray-700 w-full p-2 rounded"
                 placeholder="Correo electrónico"
+                formControlName="email"
             />
+            @if(email && email.touched && email.errors){
+            <span class="text-red-500 text-sm">
+                El correo electrónico no es válido
+            </span>
+            }
         </div>
+
+        @if(this.authType === 'register'){
+        <div>
+            <label for="username" class="sr-only">Username</label>
+            <input
+                id="username"
+                name="username"
+                required
+                class="bg-gray-700 w-full p-2 rounded"
+                placeholder="Username"
+                formControlName="username"
+            />
+            @if(username && username.touched && username.errors){
+            <span class="text-red-500 text-sm">
+                Este campo es obligatorio
+            </span>
+            }
+        </div>
+        }
+
         <div>
             <label for="password" class="sr-only">Contraseña</label>
             <input
@@ -21,22 +46,46 @@
                 name="password"
                 type="password"
                 required
-                [(ngModel)]="password"
                 class="bg-gray-700 w-full p-2 rounded"
                 placeholder="Contraseña"
+                formControlName="password"
             />
+            @if(password && password.touched && password.errors){
+            <span class="text-red-500 text-sm">
+                La contraseña debe tener al menos 6 caracteres
+            </span>
+            }
         </div>
     </div>
     <div>
         <button
             type="submit"
-            class="w-full bg-green-500 text-black hover:bg-green-600 font-arcade p-2 rounded"
+            class="w-full text-black font-arcade p-2 rounded"
+            [ngClass]="
+                email?.valid && password?.valid
+                    ? 'bg-green-500 hover:bg-green-600'
+                    : 'bg-green-700 hover:bg-green-700'
+            "
+            [disabled]="!(email?.valid && password?.valid)"
         >
-        @if (this.authType === 'login') {
-            Iniciar Sesión
-        } @else {
-            Registrarse
-        }
+            @if (this.authType === 'login') { Iniciar Sesión } @else {
+            Registrarse }
         </button>
     </div>
+    @if (this.authType === 'login') {
+    <div class="mt-5 flex gap-3">
+        <button
+            class="w-full bg-cyan-500 text-black hover:bg-cyan-600 font-arcade p-2 rounded"
+            (click)="fillInGuest('guest')"
+        >
+            Invitado
+        </button>
+        <button
+            class="w-full bg-cyan-500 text-black hover:bg-cyan-600 font-arcade p-2 rounded"
+            (click)="fillInGuest('admin')"
+        >
+            Admin
+        </button>
+    </div>
+    }
 </form>

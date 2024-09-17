@@ -7,9 +7,20 @@
         {{ description }}
     </p>
     <button
-        
-        class="bg-green-500 hover:bg-green-500/70 p-2 rounded text-black"
+        class="p-2 rounded text-black"
+        [ngClass]="
+            this.authService.currentUserSig()
+                ? 'bg-green-500 hover:bg-green-500/70'
+                : 'bg-green-700 hover:bg-green-700'
+        "
+		[disabled]="this.authService.currentUserSig() === null"
     >
         Jugar Ahora
     </button>
+	@if (this.authService.currentUserSig() === null) {
+
+	<span class="text-sm text-red-500">
+		Inicia sesión para jugar
+	</span>
+	}
 </div>

@@ -16,25 +16,25 @@ export class HomePageComponent {
             title: 'Ahorcado',
             description:
                 'Un juego clásico donde adivinas palabras letra por letra antes de que el hombrecito sea colgado.',
-            url: 'ahorcado.jpg',
+            url: 'games/icons/ahorcado.jpg',
         },
         {
             title: 'Preguntados',
             description:
                 'Un juego de preguntas y respuestas donde compites para obtener el mayor número de respuestas correctas.',
-            url: 'preguntados.jpeg',
+            url: 'games/icons/preguntados.jpeg',
         },
         {
             title: 'Higher or Lower',
             description:
                 'Un juego de adivinanza donde debes decidir si la próxima carta será mayor o menor.',
-            url: 'mayor_menor.png',
+            url: 'games/icons/mayor_menor.png',
         },
         {
-            title: 'Blackjack',
+            title: 'Wordle',
             description:
-                'Un popular juego de cartas donde debes sumar 21 puntos sin pasarte.',
-            url: 'https://via.placeholder.com/150/000000/FFFFFF/?text=Blackjack',
+                'Un juego de palabras donde tienes que adivinar una palabra oculta en el menor número de intentos posibles.',
+            url: 'games/icons/wordle.jpg',
         },
     ];
 }

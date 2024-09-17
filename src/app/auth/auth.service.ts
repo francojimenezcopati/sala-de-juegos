@@ -1,62 +1,63 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import {
     Auth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
+    updateProfile,
+    User,
+    user,
 } from '@angular/fire/auth';
-
-// interface ApiResponse {
-// 	idToken: string; //	A Firebase Auth ID token for the authenticated user.
-// 	email: string; //	The email for the authenticated user.
-// 	refreshToken: string; //	A Firebase Auth refresh token for the authenticated user.
-// 	expiresIn: string; //	The number of seconds in which the ID token expires.
-// 	localId: string; //	The uid of the authenticated user.
-// 	registered: boolean;
-// }
-
-// interface ApiPayload {
-// 	email: string;
-// 	password: string;
-// 	returnSecureToken: boolean;
-// }
+import { Router } from '@angular/router';
+import { UserInterface } from './user.interface';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthService {
-    constructor(private auth: Auth) {}
+    auth = inject(Auth);
+    user$: Observable<User | null> = user(this.auth);
+    currentUserSig = signal<UserInterface | null | undefined>(undefined);
+
+    constructor(private router: Router) {
+        // Suscribirse a los cambios en el estado de autenticación
+        this.auth.onAuthStateChanged((authUser) => {
+            if (authUser) {
+                const dateString = authUser.metadata.lastSignInTime;
+                const dateLastLogin = new Date(dateString as string);
+                this.currentUserSig.set({
+                    email: authUser.email!,
+                    username: authUser.displayName!,
+                    lastLogin: dateLastLogin.toString(),
+                });
+                // Redireccionar si el usuario está autenticado
+                this.router.navigateByUrl('/home', { replaceUrl: true });
+            } else {
+                this.currentUserSig.set(null);
+            }
+        });
+    }
 
     // Registro de usuarios
-    public async register(email: string, password: string) {
-        try {
-            const user = await createUserWithEmailAndPassword(
-                this.auth,
-                email,
-                password
-            );
-            return user;
-        } catch (error) {
-            return null;
-        }
+    public async register(email: string, username: string, password: string) {
+        const promise = createUserWithEmailAndPassword(
+            this.auth,
+            email,
+            password
+        ).then((res) => {
+            updateProfile(res.user, { displayName: username });
+        });
+        return promise;
     }
 
     // Inicio de sesión
     public async login(email: string, password: string) {
-        try {
-            const user = await signInWithEmailAndPassword(
-                this.auth,
-                email,
-                password
-            );
-            return user;
-        } catch (error) {
-            return null;
-        }
+        return signInWithEmailAndPassword(this.auth, email, password);
     }
 
     // Cierre de sesión
-    public logout() {
+    logout() {
         return signOut(this.auth);
     }
 }

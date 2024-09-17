@@ -8,15 +8,23 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 
+//TOASTER
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideToastr } from 'ngx-toastr';
+
 export const appConfig: ApplicationConfig = {
     providers: [
         provideZoneChangeDetection({ eventCoalescing: true }),
         provideRouter(routes),
 
-        provideFirebaseApp(() =>
-            initializeApp(environment.firebaseConfig)
-        ),
+        provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
         provideAuth(() => getAuth()),
         provideFirestore(() => getFirestore()),
+
+        provideAnimations(), // required animations providers
+        provideToastr({
+            positionClass: 'toast-bottom-right', // Posición en la esquina superior derecha
+            closeButton: true, // Mostrar botón de cerrar
+        }), // Toastr providers
     ],
 };
