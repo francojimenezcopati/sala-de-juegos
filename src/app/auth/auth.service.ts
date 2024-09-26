@@ -5,34 +5,38 @@ import {
     signInWithEmailAndPassword,
     signOut,
     updateProfile,
+    useDeviceLanguage,
     User,
-    user,
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { UserInterface } from './user.interface';
-import { Observable } from 'rxjs';
+import { UserDetails } from './userDetails';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Subscription } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthService {
+    firestore = inject(AngularFirestore);
+    router = inject(Router);
     auth = inject(Auth);
-    user$: Observable<User | null> = user(this.auth);
-    currentUserSig = signal<UserInterface | null | undefined>(undefined);
+    currentUserSig = signal<UserDetails | null | undefined>(undefined);
 
-    constructor(private router: Router) {
+    constructor() {
         // Suscribirse a los cambios en el estado de autenticación
         this.auth.onAuthStateChanged((authUser) => {
             if (authUser) {
-                const dateString = authUser.metadata.lastSignInTime;
-                const dateLastLogin = new Date(dateString as string);
-                this.currentUserSig.set({
-                    email: authUser.email!,
-                    username: authUser.displayName!,
-                    lastLogin: dateLastLogin.toString(),
-                });
+                this.firestore // TARDA MAS, XQ RECUPERA DE FIRESTORE Y NO DEL AUTH DB
+                    .doc('users/' + authUser.uid)
+                    .get()
+                    .subscribe((object) => {
+                        this.currentUserSig.set({
+                            ...(object.data() as UserDetails),
+                            uid: authUser.uid,
+                        }); 
+                    });
                 // Redireccionar si el usuario está autenticado
-                this.router.navigateByUrl('/home', { replaceUrl: true });
+                // this.router.navigateByUrl('/home', { replaceUrl: true });
             } else {
                 this.currentUserSig.set(null);
             }
@@ -46,14 +50,26 @@ export class AuthService {
             email,
             password
         ).then((res) => {
-            updateProfile(res.user, { displayName: username });
+            updateProfile(res.user, { displayName: username }).then(() => {
+                this.createUser(res.user);
+            });
         });
         return promise;
     }
 
     // Inicio de sesión
     public async login(email: string, password: string) {
-        return signInWithEmailAndPassword(this.auth, email, password);
+        const promise = signInWithEmailAndPassword(this.auth, email, password);
+        // promise.then((credentials) => {
+        //     this.createUser(credentials.user);
+        // });
+        return promise;
+    }
+
+    private async createUser(authUser: User) {
+        const userDetails = new UserDetails(authUser);
+        const ref = this.firestore.collection('users').doc(authUser.uid);
+        ref.set({ ...userDetails });
     }
 
     // Cierre de sesión

@@ -1,0 +1,75 @@
+<div class="flex flex-col h-[calc(100vh-64px)]">
+    <div class="flex-1 flex flex-col max-w-screen-xl mx-auto w-full px-4 py-6">
+        <div
+            class="flex flex-col justify-between bg-gray-800 h-full rounded-lg p-4"
+        >
+            <!-- Chat Header -->
+            <div
+                class="flex justify-between items-center border-b border-gray-700 pb-3"
+            >
+                <h2 class="text-lg font-bold text-white">Sala de Chat</h2>
+            </div>
+
+            @if (this.authService.currentUserSig(); as currentUser) {
+
+            <!-- Chat Messages -->
+            <div class="flex-1 overflow-y-auto my-4">
+                @for (message of messages; track $index) {
+
+                <div
+                    class="flex mb-4 {{
+                        message.userId === currentUser.uid
+                            ? 'justify-end'
+                            : 'justify-start'
+                    }}"
+                >
+                    <div
+                        class="bg-gray-700 text-white p-3 rounded-lg {{
+                            message.userId === currentUser.uid
+                                ? 'bg-green-500'
+                                : 'bg-gray-700'
+                        }}"
+                    >
+                        <span
+                            class="font-medium {{
+                                message.userId === currentUser.uid
+                                    ? 'text-black'
+                                    : 'text-blue-300'
+                            }}"
+                        >
+                            {{ message.username }} :
+                        </span>
+                        <span
+                            class="font-medium {{
+                                message.userId === currentUser.uid
+                                    ? 'text-black'
+                                    : ''
+                            }}"
+                        >
+                            {{ message.content }}
+                        </span>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <!-- Message Input -->
+            <div class="border-t border-gray-700 pt-4">
+                <form class="flex space-x-4">
+                    <input
+                        type="text"
+                        name="message"
+                        class="flex-1 p-2 bg-gray-800 text-white rounded-lg focus:outline-none"
+                        placeholder="Escribe un mensaje..."
+                    />
+                    <button
+                        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg"
+                    >
+                        Enviar
+                    </button>
+                </form>
+            </div>
+            }
+        </div>
+    </div>
+</div>

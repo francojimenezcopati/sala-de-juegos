@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { GameCardComponent } from '../game-card/game-card.component';
 import { RouterLink } from '@angular/router';
-import { PongComponent } from "../../pong-bg/pong/pong.component";
+import { PongComponent } from '../../pong-bg/pong/pong.component';
 
 @Component({
     selector: 'app-home-page',
@@ -38,4 +38,19 @@ export class HomePageComponent {
             url: 'games/icons/wordle.jpg',
         },
     ];
+
+    async typeSentence(sentence: string, eleRef: string, delay = 100) {
+        const letters = sentence.split('');
+        let i = 0;
+        while (i < letters.length) {
+            await this.waitForMs(delay);
+            document.querySelector(eleRef)?.append(letters[i]);
+            i++;
+        }
+        return;
+    }
+
+    waitForMs(ms: number) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
 }

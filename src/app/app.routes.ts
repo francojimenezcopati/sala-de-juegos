@@ -35,6 +35,19 @@ export const routes: Routes = [
             ),
     },
     {
+        path: 'chat',
+        loadComponent: () =>
+            import('./chat/chat-page/chat-page.component').then(
+                (m) => m.ChatPageComponent
+            ),
+    },
+
+
+
+	//
+	//
+	//
+    {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full',

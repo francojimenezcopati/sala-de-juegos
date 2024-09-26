@@ -7,6 +7,7 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 
 //TOASTER
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -26,5 +27,7 @@ export const appConfig: ApplicationConfig = {
             positionClass: 'toast-bottom-right', // Posición en la esquina superior derecha
             closeButton: true, // Mostrar botón de cerrar
         }), // Toastr providers
+
+		{ provide: FIREBASE_OPTIONS, useValue: environment.firebaseConfig }
     ],
 };
