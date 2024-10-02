@@ -1,0 +1,4 @@
+.letras{
+	display: grid;
+	grid-template-columns: repeat(13, minmax(0, 1fr));
+}

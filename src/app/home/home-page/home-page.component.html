@@ -81,8 +81,15 @@
                     >
                         Saber más
                     </button>
+
                     <button
-                        class="w-24 bg-green-500 hover:bg-green-500/70 p-2 rounded text-black"
+                        class="w-24 p-2 rounded text-black"
+                        [ngClass]="
+                            this.authService.currentUserSig()
+                                ? 'bg-green-500 hover:bg-green-500/70'
+                                : 'bg-green-700 hover:bg-green-700'
+                        "
+                        [disabled]="this.authService.currentUserSig() === null"
                         routerLink="/chat"
                     >
                         Chat
@@ -107,7 +114,8 @@
                     <app-game-card
                         [title]="game.title"
                         [description]="game.description"
-                        [url]="game.url"
+                        [imageUrl]="game.imageUrl"
+						[redirectUrl]="game.redirectUrl"
                     ></app-game-card>
                     }
                 </div>

@@ -1,56 +1,49 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { GameCardComponent } from '../game-card/game-card.component';
 import { RouterLink } from '@angular/router';
 import { PongComponent } from '../../pong-bg/pong/pong.component';
+import { AuthService } from '../../auth/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-home-page',
     standalone: true,
-    imports: [NavBarComponent, GameCardComponent, RouterLink, PongComponent],
+    imports: [NavBarComponent, GameCardComponent, RouterLink, PongComponent, CommonModule],
     templateUrl: './home-page.component.html',
     styleUrl: './home-page.component.css',
 })
 export class HomePageComponent {
+	authService = inject(AuthService)
+
     games = [
         {
             title: 'Ahorcado',
             description:
                 'Un juego clásico donde adivinas palabras letra por letra antes de que el hombrecito sea colgado.',
-            url: 'games/icons/ahorcado.jpg',
+            imageUrl: 'games/icons/ahorcado.jpg',
+			redirectUrl: "/games/ahorcado"
         },
         {
             title: 'Preguntados',
             description:
                 'Un juego de preguntas y respuestas donde compites para obtener el mayor número de respuestas correctas.',
-            url: 'games/icons/preguntados.jpeg',
+            imageUrl: 'games/icons/preguntados.jpeg',
+			redirectUrl: "/games/preguntados"
         },
         {
             title: 'Higher or Lower',
             description:
                 'Un juego de adivinanza donde debes decidir si la próxima carta será mayor o menor.',
-            url: 'games/icons/mayor_menor.png',
+            imageUrl: 'games/icons/mayor_menor.png',
+			redirectUrl: "/games/higher-or-lower"
         },
         {
             title: 'Wordle',
             description:
                 'Un juego de palabras donde tienes que adivinar una palabra oculta en el menor número de intentos posibles.',
-            url: 'games/icons/wordle.jpg',
+            imageUrl: 'games/icons/wordle.jpg',
+			redirectUrl: "/games/wordle"
         },
     ];
-
-    async typeSentence(sentence: string, eleRef: string, delay = 100) {
-        const letters = sentence.split('');
-        let i = 0;
-        while (i < letters.length) {
-            await this.waitForMs(delay);
-            document.querySelector(eleRef)?.append(letters[i]);
-            i++;
-        }
-        return;
-    }
-
-    waitForMs(ms: number) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-    }
 }

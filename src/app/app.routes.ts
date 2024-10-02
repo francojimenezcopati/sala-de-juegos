@@ -42,11 +42,31 @@ export const routes: Routes = [
             ),
     },
 
+    {
+        path: 'games',
+        children: [
+            // {
+            // 	path: "ahorcado",
+            // },
+            // {
+            // 	path: "preguntados",
+            // },
+            // {
+            // 	path: "higher-or-lower",
+            // },
+            {
+                path: 'wordle',
+                loadComponent: () =>
+                    import('./games/wordle/ui/ui.component').then(
+                        (m) => m.UiComponent
+                    ),
+            },
+        ],
+    },
 
-
-	//
-	//
-	//
+    //
+    //
+    //
     {
         path: '',
         redirectTo: 'home',

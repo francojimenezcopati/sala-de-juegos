@@ -10,7 +10,6 @@ export class UserDetails {
     constructor(authUser: User) {
         const dateString = authUser.metadata.lastSignInTime;
         const dateLastLogin = new Date(dateString as string);
-		console.log(authUser.uid);
 		
 		this.uid = authUser.uid;
         this.email = authUser.email!;

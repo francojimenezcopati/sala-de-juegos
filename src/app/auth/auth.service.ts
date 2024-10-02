@@ -5,13 +5,12 @@ import {
     signInWithEmailAndPassword,
     signOut,
     updateProfile,
-    useDeviceLanguage,
     User,
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { UserDetails } from './userDetails';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Subscription } from 'rxjs';
+import { FirestoreCollections } from '../db/dbColletionEnum';
 
 @Injectable({
     providedIn: 'root',
@@ -27,7 +26,7 @@ export class AuthService {
         this.auth.onAuthStateChanged((authUser) => {
             if (authUser) {
                 this.firestore // TARDA MAS, XQ RECUPERA DE FIRESTORE Y NO DEL AUTH DB
-                    .doc('users/' + authUser.uid)
+                    .doc(`${FirestoreCollections.users}/` + authUser.uid)
                     .get()
                     .subscribe((object) => {
                         this.currentUserSig.set({
@@ -68,7 +67,7 @@ export class AuthService {
 
     private async createUser(authUser: User) {
         const userDetails = new UserDetails(authUser);
-        const ref = this.firestore.collection('users').doc(authUser.uid);
+        const ref = this.firestore.collection(FirestoreCollections.users).doc(authUser.uid);
         ref.set({ ...userDetails });
     }
 

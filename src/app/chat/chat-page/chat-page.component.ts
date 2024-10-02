@@ -1,59 +1,154 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
-import { UserDetails } from '../../auth/userDetails';
-import { Message } from '../message.interface';
+import { Message, MessageFromFirestore } from '../message.interface';
+import { DbService } from '../../db/db.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Timestamp } from '@angular/fire/firestore';
+import { FirestoreCollections } from '../../db/dbColletionEnum';
 
 @Component({
     selector: 'app-chat-page',
     standalone: true,
-    imports: [],
+    imports: [FormsModule, CommonModule],
     templateUrl: './chat-page.component.html',
     styleUrl: './chat-page.component.css',
 })
-export class ChatPageComponent {
+export class ChatPageComponent implements OnInit {
     authService = inject(AuthService);
-    // currentUser = this.authService.currentUserSig() as UserDetails;
+    dbService = inject(DbService);
 
-	// ngOnInit(){
-	// 	console.log(this.currentUser);
-	// }
+    messages: Message[] = [];
+    groupedMessages: { date: string; messages: Message[] }[] = [];
 
-    messages: Message[] = [
-        {
-            content: '¡Hola a todos! ¿Listos para jugar?',
-            createdAt: new Date('2024-09-25T10:15:00'),
-            userId: '2nQrsP3v0CMR5q8xIsyuPALLnRq1', // Mensaje del usuario actual
-            username: 'Franco',
-        },
-        {
-            content: 'Sí, estoy listo. ¡Vamos!',
-            createdAt: new Date('2024-09-25T10:16:00'),
-            userId: '3xFsY6q4lBhH2vXsWlDf3PLOtTg9', // Otro usuario
-            username: 'Juan',
-        },
-        {
-            content: '¿Alguien ha probado el nuevo juego?',
-            createdAt: new Date('2024-09-25T10:17:30'),
-            userId: '2nQrsP3v0CMR5q8xIsyuPALLnRq1', // Mensaje del usuario actual
-            username: 'Franco',
-        },
-        {
-            content: 'Sí, está increíble, me encanta la nueva funcionalidad.',
-            createdAt: new Date('2024-09-25T10:18:45'),
-            userId: '4yTgH5g3q9NjM8fGhPnV2LMnFg9', // Otro usuario
-            username: 'María',
-        },
-        {
-            content: '¿Cuál es tu puntuación más alta hasta ahora?',
-            createdAt: new Date('2024-09-25T10:19:00'),
-            userId: '2nQrsP3v0CMR5q8xIsyuPALLnRq1', // Mensaje del usuario actual
-            username: 'Franco',
-        },
-        {
-            content: 'Alrededor de 350 puntos, ¡pero puedo hacerlo mejor!',
-            createdAt: new Date('2024-09-25T10:20:10'),
-            userId: '3xFsY6q4lBhH2vXsWlDf3PLOtTg9', // Otro usuario
-            username: 'Juan',
-        },
-    ];
+    messageContentToSend: string = '';
+
+    ngOnInit(): void {
+        this.getMessagesFromDB();
+    }
+
+    async sendMessageToDB() {
+        const loggedUser = this.authService.currentUserSig();
+
+        const messageToSend: MessageFromFirestore = {
+            content: this.messageContentToSend,
+            createdAt: Timestamp.now(),
+            userId: loggedUser?.uid!,
+            username: loggedUser?.username!,
+        };
+
+		await this.dbService.addDocument(FirestoreCollections.messages, messageToSend)
+
+		// update the chat with the new message
+		this.getMessagesFromDB()
+    }
+
+    getMessagesFromDB() {
+        this.dbService
+            .getCollection('messages')
+            .get()
+            .subscribe((messagesFromDB) => {
+                const messages = messagesFromDB.docs.map((message) => {
+                    const messageObj = message.data() as MessageFromFirestore;
+
+                    return {
+                        ...messageObj,
+                        createdAt: messageObj.createdAt.toDate(),
+                    } as Message;
+                });
+
+                messages.sort(
+                    (m, m2) => m.createdAt.getTime() - m2.createdAt.getTime()
+                );
+
+                this.groupMessagesByDate(messages);
+            });
+    }
+
+    groupMessagesByDate(messages: Message[]) {
+        const grouped: { date: string; messages: Message[] }[] = [];
+
+        messages.forEach((message) => {
+            const messageDate = message.createdAt;
+            const formattedDate = this.getFormattedDate(messageDate);
+
+            // Busca si ya existe un grupo con la misma fecha
+            const group = grouped.find((g) => g.date === formattedDate);
+            if (group) {
+                group.messages.push(message);
+            } else {
+                grouped.push({ date: formattedDate, messages: [message] });
+            }
+        });
+
+        this.groupedMessages = grouped;
+    }
+
+    getFormattedDate(date: Date): string {
+        const today = new Date();
+        const yesterday = new Date();
+        const twoDaysAgo = new Date();
+
+        yesterday.setDate(today.getDate() - 1);
+        twoDaysAgo.setDate(today.getDate() - 2);
+
+        // Comparar solo día, mes, y año (ignorando la hora)
+        if (this.isSameDay(date, today)) {
+            return 'Hoy';
+        } else if (this.isSameDay(date, yesterday)) {
+            return 'Ayer';
+        } else if (this.isSameDay(date, twoDaysAgo)) {
+            return 'Anteayer';
+        } else if (date.getFullYear() === today.getFullYear()) {
+            return this.formatDateWithoutYear(date);
+        } else {
+            return this.formatDateWithYear(date);
+        }
+    }
+
+    isSameDay(date1: Date, date2: Date): boolean {
+        return (
+            date1.getDate() === date2.getDate() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getFullYear() === date2.getFullYear()
+        );
+    }
+
+    formatDateWithoutYear(date: Date): string {
+        const months = [
+            'Enero',
+            'Febrero',
+            'Marzo',
+            'Abril',
+            'Mayo',
+            'Junio',
+            'Julio',
+            'Agosto',
+            'Septiembre',
+            'Octubre',
+            'Noviembre',
+            'Diciembre',
+        ];
+        return `${date.getDate()} de ${months[date.getMonth()]}`;
+    }
+
+    formatDateWithYear(date: Date): string {
+        const months = [
+            'Enero',
+            'Febrero',
+            'Marzo',
+            'Abril',
+            'Mayo',
+            'Junio',
+            'Julio',
+            'Agosto',
+            'Septiembre',
+            'Octubre',
+            'Noviembre',
+            'Diciembre',
+        ];
+        return `${date.getDate()} de ${
+            months[date.getMonth()]
+        } del ${date.getFullYear()}`;
+    }
 }
