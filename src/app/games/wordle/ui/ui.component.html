@@ -14,29 +14,29 @@
 
     <!-- Letras adivinadas -->
     <div class="flex flex-col gap-4 mb-8">
-        @for(_ of this.maxAttemptsArray ; track $index; let index = $index){
+        @for(_ of this.maxAttemptsArray ; track $index; let nroFila = $index){
         <div class="flex space-x-2">
-            @for(letter of this.game.getWordToGuess(); track $index; let i = $index){
+            @for(_ of this.game.getWordToGuess(); track $index; let i = $index){
 
             <div
-                class="w-12 h-12 flex justify-center items-center text-xl font-bold rounded bg-gray-400"
+                class="w-12 h-12 flex justify-center items-center text-xl font-bold rounded bg-gray-400 p-1 text-white"
                 [ngClass]="
-                    index < this.game.getAttempts().length
+                    nroFila < this.game.getAttempts().length
                         ? {
-                              'bg-green-500 text-white':
-                                  this.rows[index][i].status === 'correct',
-                              'bg-yellow-500 text-white':
-                                  this.rows[index][i].status === 'present',
-                              'bg-gray-400 text-white':
-                                  this.rows[index][i].status === 'absent'
+                              'bg-green-500':
+                                  this.rows[nroFila][i].status === 'correct',
+                              'bg-yellow-500':
+                                  this.rows[nroFila][i].status === 'present',
+                              '':
+                                  this.rows[nroFila][i].status === 'absent'
                           }
-                        : 'bg-gray-400'
+                        : ''
                 "
             >
-                @if(index < this.game.getAttempts().length){
-                {{ this.rows[index][i].letter }}
-                } @if(index == this.game.getAttempts().length){
-                {{ this.currentGuess[$index] }}
+                @if(nroFila < this.game.getAttempts().length){
+                {{ this.rows[nroFila][i].letter }}
+                } @else if(nroFila == this.game.getAttempts().length){
+                {{ this.currentGuess[i] }}
                 }
             </div>
             }
@@ -74,10 +74,10 @@
     <!-- Botón de Reinicio -->
     @if(gameOver){
 
-    <div class="text-center">
+    <div class="text-center mt-4">
         <button
             (click)="resetGame()"
-            class="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition "
+            class="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition"
         >
             Restart Game
         </button>

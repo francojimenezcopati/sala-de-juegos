@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LetterStatus } from '../letter-status.enum';
-import { Wordle } from '../wordle';
+import { Ahorcado } from '../ahorcado';
 
 @Component({
     selector: 'app-ui',
@@ -111,14 +110,15 @@ export class UiComponent {
         'vuelta',
         'zapato',
     ];
-    game!: Wordle;
+
     message: string = '';
-    rows: { letter: string; status: LetterStatus }[][] = [];
-    currentGuess: string[] = []; // Array to hold the current guess letters
-    alphabet: { [key: string]: LetterStatus } = {};
-    gameOver: boolean = false;
     won: boolean = false;
-    maxAttemptsArray!: Array<any>;
+    gameOver: boolean = false;
+    protected alphabet: { [key: string]: 'unused' | 'incorrect' | 'correct' } =
+        {};
+    protected currentWordGuess!: string;
+    protected wrongLetters: string[] = [];
+    protected game!: Ahorcado;
 
     constructor() {
         this.startGame();
@@ -129,70 +129,38 @@ export class UiComponent {
     startGame(): void {
         const randomWord =
             this.wordsList[Math.floor(Math.random() * this.wordsList.length)];
-        this.game = new Wordle(randomWord);
+        this.game = new Ahorcado(randomWord);
         this.alphabet = this.game.getAlphabet();
-        this.rows = [];
-        this.currentGuess = [];
+        this.currentWordGuess = this.game.getCurrentWordGuess();
+		this.wrongLetters = []
         this.gameOver = false;
         this.won = false;
         this.message = '';
-
-        this.maxAttemptsArray = Array.from({
-            length: this.game.getMaxAttempts(),
-        });
     }
 
     onLetterClick(letter: string): void {
-        if (
-            this.gameOver ||
-            this.currentGuess.length >= this.game.getWordToGuess().length
-        ) {
+        if (this.gameOver) {
             return;
         }
 
-        // Add the letter to the current guess
-        this.currentGuess.push(letter.toUpperCase());
+        const gameWon = this.game.guess(letter);
 
-        // If the current guess is complete, submit it
-        if (this.currentGuess.length === this.game.getWordToGuess().length) {
-            this.onSubmitGuess();
+        if (gameWon === null) {
+            console.log('error nullll');
         }
-    }
-
-    onSubmitGuess(): void {
-        const guessString = this.currentGuess.join('');
-
-        const result = this.game.guess(guessString);
-
-        if (typeof result === 'string') {
-            this.message = result; // Error message
-            this.currentGuess = []; // Clear the guess to allow re-entry
-            return;
-        }
-
-        this.rows.push(
-            this.currentGuess.map((letter, index) => ({
-                letter,
-                status: result.status[index],
-            }))
-        );
 
         this.alphabet = this.game.getAlphabet();
+        this.currentWordGuess = this.game.getCurrentWordGuess();
+        this.wrongLetters = this.game.getErrors();
 
-        if (result.gameWon) {
+        if (gameWon) {
             this.gameOver = true;
             this.won = true;
+            this.message = "Congratulations! You've won!";
         } else if (this.game.isGameOver()) {
             this.gameOver = true;
-            this.message = `Game Over! The word was ${this.game.getWordToGuess()}`;
+            this.message = `Se terminó el juego! La palabra era ${this.game.getWordToGuess()}`;
         }
-
-        // Clear the current guess for the next round
-        this.currentGuess = [];
-    }
-
-    onBackspaceClicked() {
-        this.currentGuess.pop();
     }
 
     resetGame(): void {

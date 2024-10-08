@@ -45,15 +45,27 @@ export const routes: Routes = [
     {
         path: 'games',
         children: [
-            // {
-            // 	path: "ahorcado",
-            // },
-            // {
-            // 	path: "preguntados",
-            // },
-            // {
-            // 	path: "higher-or-lower",
-            // },
+            {
+                path: 'ahorcado',
+                loadComponent: () =>
+                    import('./games/ahorcado/ui/ui.component').then(
+                        (m) => m.UiComponent
+                    ),
+            },
+            {
+                path: 'higher-or-lower',
+                loadComponent: () =>
+                    import('./games/higher-or-lower/ui/ui.component').then(
+                        (m) => m.UiComponent
+                    ),
+            },
+            {
+                path: 'preguntados',
+                loadComponent: () =>
+                    import('./games/preguntados/ui/ui.component').then(
+                        (m) => m.UiComponent
+                    ),
+            },
             {
                 path: 'wordle',
                 loadComponent: () =>
