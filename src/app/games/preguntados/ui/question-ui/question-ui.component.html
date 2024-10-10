@@ -1,0 +1,43 @@
+<div
+    class="flex flex-col items-center justify-center mt-10 p-6 w-full max-w-4xl bg-slate-200 rounded-lg shadow-md"
+>
+    <!-- Título de la pregunta -->
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+        {{ question.question }}
+    </h2>
+
+    <!-- Opciones de respuesta -->
+    <div class="grid grid-cols-1 gap-4 w-full">
+        @for(answer of answers; track $index){
+
+        <button
+            [ngClass]="{
+                'bg-green-500':
+                    answer === question.correctAnswers && answerSelected,
+                'bg-red-500':
+                    answer !== question.correctAnswers && answerSelected
+            }"
+            [disabled]="this.answerSelected"
+            class="bg-blue-500 text-white text-lg font-medium py-3 px-6 rounded-lg transition-all duration-300 ease-in-out {{
+                this.answerSelected ? '' : 'hover:bg-blue-600'
+            }} focus:outline-none focus:ring-2 focus:ring-blue-300"
+            (click)="checkAnswer(answer)"
+        >
+            {{ answer }}
+        </button>
+        }
+    </div>
+
+    @if(this.answerSelected){
+
+    <div class="mt-8">
+        <button
+            class="bg-blue-500 hover:bg-blue-500/70 p-2 rounded text-white"
+            (click)="this.onChangeQuestion()"
+        >
+            Siguiente pregunta
+        </button>
+    </div>
+
+    }
+</div>

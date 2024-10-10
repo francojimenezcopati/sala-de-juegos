@@ -1,2 +1,21 @@
-<div class="mt-6 mb-8 flex flex-col items-center justify-center">
+<div class="mt-6 mb-8 flex flex-col items-center">
+    <h1
+        class="text-4xl font-bold sm:text-5xl md:text-6xl lg:text-7xl/none mb-8"
+    >
+        Preguntados
+    </h1>
+
+    @if(!this.showQuestion){
+
+    <app-roulette
+        (changeToQuestion)="onChangeToQuestion($event)"
+        (categorySelected)="onCategorySelected($event)"
+    ></app-roulette>
+
+    }@else if(this.question !== null){
+    <app-question-ui
+        (changeQuestion)="onChangeQuestion($event)"
+        [question]="this.question!"
+    ></app-question-ui>
+    }
 </div>

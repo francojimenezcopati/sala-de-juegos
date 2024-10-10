@@ -1,0 +1,18 @@
+<div class="flex flex-col items-center mb-5 relative">
+    <img
+        class="h-14 -mb-6 z-20"
+        src="/games/preguntados/arrow-down.svg"
+        alt=""
+    />
+
+    <!-- Contenedor de la ruleta -->
+    <div class="wheel-container">
+        <img
+            class="wheel h-72"
+            [style.transform]="'rotate(' + rotationDegrees + 'deg)'"
+            src="/games/preguntados/ruleta.png"
+            alt="Ruleta"
+        />
+        <div class="clickable-center" (click)="spinWheel()"></div>
+    </div>
+</div>
